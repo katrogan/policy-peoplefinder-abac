@@ -1,5 +1,5 @@
 {
-    "roots": ["peoplefinder"],
+    "roots": ["peoplefinder", "flyteadmin"],
     "metadata": {
       "required_builtins": {
           "builtin1": [
