@@ -6,9 +6,10 @@ default allowed = false
 
 allowed {
   # TODO: don't hardcode organization1
-  some permission in res.get(input.organization).organization1.projects[input.project].permissions
+  # TODO: get organization from input.user when it's mapped from okta
+  some permission in res.get(input.resource.organization).organization1.projects[input.resource.project].permissions
 
-  input.action == permission.action 
-  input.group in permission.groups
+  input.resource.action == permission.action 
+  input.resource.group in permission.groups
 }
 
