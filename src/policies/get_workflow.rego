@@ -8,7 +8,7 @@ allowed {
   # TODO: don't hardcode organization1
   # TODO: get organization from input.user when it's mapped from okta
   #some permission in res.get(input.resource.organization).organization1.projects[input.resource.project].permissions
-  res.get(input.resource.organization).organization1["projects"]
+  res.get(input.resource.organization).organization1.projects[input.resource.project]
 
   # permission := {"action": "GET", "groups": ["group1"] }
 
