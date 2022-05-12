@@ -9,7 +9,7 @@ allowed {
   # TODO: get organization from input.user when it's mapped from okta
   #some permission in res.get(input.resource.organization).organization1.projects[input.resource.project].permissions
   some project in res.get(input.resource.organization).organization1.projects
-  project
+  project.name == input.resource.project
 
   # permission := {"action": "GET", "groups": ["group1"] }
 
