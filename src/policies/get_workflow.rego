@@ -4,9 +4,16 @@ import future.keywords.in
 
 default allowed = false
 
+default global_perms_exist = false
 default globally_allowed = false
+
+default domain_perms_exist = false
 default domain_allowed = false
+
+default project_perms_exist = false
 default project_allowed = false
+
+default workflow_perms_exist = false
 default workflow_allowed = false
 
 has_key(x, k) { 
@@ -14,6 +21,10 @@ has_key(x, k) {
 }
 
 # TODO: get organization and group from input.user when it's mapped from okta
+
+global_perms_exist {
+  res.get(input.resource.organization).organization1.permissions
+}
 
 # Match global credentials.
 globally_allowed {
@@ -25,17 +36,14 @@ globally_allowed {
   user_group.name == group.name
 }
 
-# Match domain credentials.
-# - when no domain permissions are set
-domain_allowed {
+domain_perms_exist {
   some domain in res.get(input.resource.organization).organization1.domains
   domain.name == input.resource.domain
 
-  permissions_exist = has_key(domain, "permissions")
-  not permissions_exist
+  domain.permissions
 }
 
-# - when a matching domain permission is set
+# Match domain credentials.
 domain_allowed {
   some domain in res.get(input.resource.organization).organization1.domains
   domain.name == input.resource.domain
@@ -47,20 +55,16 @@ domain_allowed {
   user_group.name == group.name
 }
 
-# Match project credentials.
-# - when no project permissions are set
-project_allowed {
+project_perms_exist {
   some domain in res.get(input.resource.organization).organization1.domains
   domain.name == input.resource.domain
 
   some project in domain.projects
   project.name == input.resource.project
 
-  permissions_exist = has_key(project, "permissions")
-  not permissions_exist
+  project.permissions
 }
 
-# - when a matching project permission is set
 project_allowed {
   some domain in res.get(input.resource.organization).organization1.domains
   domain.name == input.resource.domain
@@ -75,14 +79,10 @@ project_allowed {
   user_group.name == group.name
 }
 
-# Match workflow credentials.
-# - the resource doesn't exist at the per-workflow level.
-workflow_allowed {
-  is_workflow_scoped = has_key(input.resource, "workflow")
-}
+workflow_perms_exist {
+  # If the intput resource doesn't specify a workflow then workflow permissions aren't even considered
+  input.resource.workflow
 
-# - when no workflow permissions are set
-workflow_allowed {
   some domain in res.get(input.resource.organization).organization1.domains
   domain.name == input.resource.domain
 
@@ -90,10 +90,7 @@ workflow_allowed {
   project.name == input.resource.project
 
   some workflow in project.workflows
-  workflow.name == input.resource.workflow
-
-  permissions_exist = has_key(workflow, "permissions")
-  not permissions_exist
+  workflow.permissions
 }
 
 workflow_allowed {
@@ -113,10 +110,32 @@ workflow_allowed {
   user_group.name == group.name
 }
 
-# A decision is made when permissions are allowed across all levels of the hierarchy
+# A decision is made when permissions are allowed (if configured) across all levels of the hierarchy
 allowed {
-  globally_allowed
-  domain_allowed
+  workflow_allowed
+}
+
+allowed {
+  not workflow_perms_exist
   project_allowed
-  workflow_allowed  
+}
+
+allowed {
+  not workflow_perms_exist
+  not project_perms_exist
+  domain_allowed
+}
+
+allowed {
+  not workflow_perms_exist
+  not project_perms_exist
+  not domain_perms_exist
+  globally_allowed
+}
+
+allowed {
+  not workflow_perms_exist
+  not project_perms_exist
+  not domain_perms_exist
+  not global_perms_exist
 }
