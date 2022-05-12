@@ -15,6 +15,7 @@ allowed {
 
   some permission in project.permissions
   input.resource.action == permission["action"]
-  input.resource.group in permission["groups"]
+  # some group in permission.groups
+  # input.resource.group == group
 }
 
