@@ -23,13 +23,12 @@ has_key(x, k) {
 # TODO: get organization and group from input.user when it's mapped from okta
 
 global_perms_exist {
-  res.get(input.resource.organization).organization1.permissions
+  res.get(input.resource.organization)[input.resource.organization].permissions
 }
 
 # Match global credentials.
 globally_allowed {
-  # TODO: don't hardcode organization1
-  some permission in res.get(input.resource.organization).organization1.permissions
+  some permission in res.get(input.resource.organization)[input.resource.organization].permissions
   input.resource.action == permission["action"]
   some group in permission.groups
   some user_group in input.resource.groups
@@ -37,7 +36,7 @@ globally_allowed {
 }
 
 domain_perms_exist {
-  some domain in res.get(input.resource.organization).organization1.domains
+  some domain in res.get(input.resource.organization)[input.resource.organization].domains
   domain.name == input.resource.domain
 
   domain.permissions
@@ -45,7 +44,7 @@ domain_perms_exist {
 
 # Match domain credentials.
 domain_allowed {
-  some domain in res.get(input.resource.organization).organization1.domains
+  some domain in res.get(input.resource.organization)[input.resource.organization].domains
   domain.name == input.resource.domain
 
   some permission in domain.permissions
@@ -56,7 +55,7 @@ domain_allowed {
 }
 
 project_perms_exist {
-  some domain in res.get(input.resource.organization).organization1.domains
+  some domain in res.get(input.resource.organization)[input.resource.organization].domains
   domain.name == input.resource.domain
 
   some project in domain.projects
@@ -66,7 +65,7 @@ project_perms_exist {
 }
 
 project_allowed {
-  some domain in res.get(input.resource.organization).organization1.domains
+  some domain in res.get(input.resource.organization)[input.resource.organization].domains
   domain.name == input.resource.domain
 
   some project in domain.projects
@@ -83,7 +82,7 @@ workflow_perms_exist {
   # If the intput resource doesn't specify a workflow then workflow permissions aren't even considered
   input.resource.workflow
 
-  some domain in res.get(input.resource.organization).organization1.domains
+  some domain in res.get(input.resource.organization)[input.resource.organization].domains
   domain.name == input.resource.domain
 
   some project in domain.projects
@@ -94,7 +93,7 @@ workflow_perms_exist {
 }
 
 workflow_allowed {
-  some domain in res.get(input.resource.organization).organization1.domains
+  some domain in res.get(input.resource.organization)[input.resource.organization].domains
   domain.name == input.resource.domain
 
   some project in domain.projects
