@@ -9,6 +9,10 @@ default domain_allowed = false
 default project_allowed = false
 default workflow_allowed = false
 
+has_key(x, k) { 
+	_ = x[k]
+}
+
 # TODO: get organization and group from input.user when it's mapped from okta
 
 # Match global credentials.
@@ -74,7 +78,7 @@ project_allowed {
 # Match workflow credentials.
 # - the resource doesn't exist at the per-workflow level.
 workflow_allowed {
-  is_workflow_scoped = haskey(input.resource, "workflow")
+  is_workflow_scoped = has_key(input.resource, "workflow")
 }
 
 # - when no workflow permissions are set
