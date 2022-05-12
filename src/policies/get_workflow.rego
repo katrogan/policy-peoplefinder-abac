@@ -1,5 +1,5 @@
 # package flyteadmin.GET.api.v1.workflows
-package flyteadmin.flyteidl.service.AdminService.CreateWorkflowEvent
+package flyteidl.service.AdminService.CreateWorkflowEvent
 
 import future.keywords.in
 
