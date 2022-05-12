@@ -8,7 +8,7 @@ default allowed = false
 allowed {
   # TODO: don't hardcode organization1
   # TODO: get organization from input.user when it's mapped from okta
-  some permission in res.get(input.resource.organization).organization1.permission
+  some permission in res.get(input.resource.organization).organization1.permissions
   input.resource.action == permission["action"]
   some group in permission.groups
   input.resource.group == group
