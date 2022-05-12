@@ -13,7 +13,8 @@ allowed {
 
   # permission := {"action": "GET", "groups": ["group1"] }
 
-  # input.resource.action == permission["action"]
-  # input.resource.group in permission["groups"]
+  some permission in project.permissions
+  input.resource.action == permission["action"]
+  input.resource.group in permission["groups"]
 }
 
