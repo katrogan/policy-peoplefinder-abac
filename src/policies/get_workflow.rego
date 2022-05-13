@@ -1,4 +1,4 @@
-# package flyteadmin.GET.api.v1.workflows
+# package flyteadmin.GET.workflows
 package flyteidl.service.AdminService.CreateWorkflowEvent
 
 import future.keywords.in
@@ -30,6 +30,8 @@ global_perms_exist {
 # Match global credentials.
 globally_allowed {
   some permission in res.get(input.resource.organization)[input.resource.organization].permissions
+  input.resource.action == permission["action"]
+
   some group in permission.groups
   some user_group in input.resource.groups
   user_group.name == group.name
@@ -48,6 +50,8 @@ domain_allowed {
   domain.name == input.resource.domain
 
   some permission in domain.permissions
+  input.resource.action == permission["action"]
+
   some group in permission.groups
   some user_group in input.resource.groups
   user_group.name == group.name
@@ -71,6 +75,8 @@ project_allowed {
   project.name == input.resource.project
 
   some permission in project.permissions
+  input.resource.action == permission["action"]
+
   some group in permission.groups
   some user_group in input.resource.groups
   user_group.name == group.name
@@ -101,6 +107,8 @@ workflow_allowed {
   workflow.name == input.resource.workflow
 
   some permission in workflow.permissions
+  input.resource.action == permission["action"]
+
   some group in permission.groups
   some user_group in input.resource.groups
   user_group.name == group.name
