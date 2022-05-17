@@ -104,7 +104,7 @@ scoped_item_allowed {
   project.name == input.resource.project
 
   some item in project[input.resource.scoped_item.type]
-  item.name == input.resource[input.resource.scoped_item.name]
+  item.name == input.resource.scoped_item.name
 
   some permission in item.permissions
   input.resource.action == permission["action"]
