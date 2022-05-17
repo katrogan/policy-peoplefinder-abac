@@ -14,8 +14,8 @@ default domain_allowed = false
 default project_perms_exist = false
 default project_allowed = false
 
-default workflow_perms_exist = false
-default workflow_allowed = false
+default scoped_item_perms_exist = false
+default scoped_item_allowed = false
 
 has_key(x, k) { 
 	_ = x[k]
@@ -82,9 +82,9 @@ project_allowed {
   user_group.name == group.name
 }
 
-workflow_perms_exist {
+scoped_item_perms_exist {
   # If the intput resource doesn't specify a workflow then workflow permissions aren't even considered
-  input.resource.workflow
+  input.resource.scoped_item
 
   some domain in res.get(input.resource.organization)[input.resource.organization].domains
   domain.name == input.resource.domain
@@ -92,21 +92,21 @@ workflow_perms_exist {
   some project in domain.projects
   project.name == input.resource.project
 
-  some workflow in project.workflows
-  workflow.permissions
+  some item in project[input.resource.scoped_item.type]
+  item.permissions
 }
 
-workflow_allowed {
+scoped_item_allowed {
   some domain in res.get(input.resource.organization)[input.resource.organization].domains
   domain.name == input.resource.domain
 
   some project in domain.projects
   project.name == input.resource.project
 
-  some workflow in project.workflows
-  workflow.name == input.resource.workflow
+  some item in project[input.resource.scoped_item.type]
+  item.name == input.resource[input.resource.scoped_item.name]
 
-  some permission in workflow.permissions
+  some permission in item.permissions
   input.resource.action == permission["action"]
 
   some group in permission.groups
@@ -114,31 +114,32 @@ workflow_allowed {
   user_group.name == group.name
 }
 
+
 # A decision is made when permissions are allowed (if configured) across all levels of the hierarchy
 allowed {
-  workflow_allowed
+  scoped_item_allowed
 }
 
 allowed {
-  not workflow_perms_exist
+  not scoped_item_perms_exist
   project_allowed
 }
 
 allowed {
-  not workflow_perms_exist
+  not scoped_item_perms_exist
   not project_perms_exist
   domain_allowed
 }
 
 allowed {
-  not workflow_perms_exist
+  not scoped_item_perms_exist
   not project_perms_exist
   not domain_perms_exist
   globally_allowed
 }
 
 allowed {
-  not workflow_perms_exist
+  not scoped_item_perms_exist
   not project_perms_exist
   not domain_perms_exist
   not global_perms_exist
